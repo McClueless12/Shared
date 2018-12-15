@@ -1,2 +1,2 @@
 # Shared
-Only for John Maness and myself, bitch
+Shared Programming Workspace for friends
