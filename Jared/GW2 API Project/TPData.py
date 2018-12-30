@@ -1,21 +1,29 @@
 import requests, json, time
 import pandas as pd 
+from os import system
 
-response = requests.get(r"https://api.guildwars2.com/v2/commerce/listings/19976.json")
-json_data = json.loads(response.text)
+clear = lambda: system('cls')
 
-buys = pd.DataFrame.from_dict(json_data["buys"], orient='columns')
-sells = pd.DataFrame.from_dict(json_data["sells"], orient='columns')
+while True:
+    clear()
+    date = time.strftime("%m/%d/%y %H:%M")
+    response = requests.get(r"https://api.guildwars2.com/v2/commerce/listings/19721.json")
+    json_data = json.loads(response.text)
 
-data_buys = buys.describe()['unit_price']
-data_sells = sells.describe()['unit_price']
+    buys = pd.DataFrame.from_dict(json_data["buys"], orient='columns')
+    sells = pd.DataFrame.from_dict(json_data["sells"], orient='columns')
 
-frames = [data_buys, data_sells]
-new_index = ['Buy', 'Sell']
+    data_buys = buys.describe()['unit_price']
+    data_sells = sells.describe()['unit_price']
 
-result = pd.concat(frames, axis=1).T
-result.reset_index(inplace=True, drop=True)
-result['Type'] = new_index
-result['Date'] = time.strftime("%m/%d/%y %H:%M")
+    frames = [data_buys, data_sells]
+    new_index = ['Buy', 'Sell']
 
-result.to_csv('MysticCoins.csv', mode='a', header=False, index=False)
+    result = pd.concat(frames, axis=1).T
+    result.reset_index(inplace=True, drop=True)
+    result['Type'] = new_index
+    result['Date'] = date
+
+    result.to_csv('Globs.csv', mode='a', header=False, index=False)
+    print(f"\nUpdate Completed @ {date}")
+    time.sleep(60)
